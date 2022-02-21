@@ -86,7 +86,7 @@ const App = props => {
                         <Typography align="center" variant="h3">Sorry, there was an error there.</Typography>
                     </Grid>
                     <Grid item>
-                        <Typography align="center" variant="h5">Servers get hangover too.</Typography>
+                        <Typography align="center" variant="h5">Servers get hangovers too.</Typography>
                     </Grid>
                 </Grid>
             </Backdrop>

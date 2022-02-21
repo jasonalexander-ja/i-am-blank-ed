@@ -3,21 +3,25 @@ import React, { useState, useEffect } from 'react';
 import {
     Grid,
     Typography,
-    Button
+    Button,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Link
 } from '@mui/material';
 import {
-    makeStyles
+    makeStyles,
+    useTheme
 } from '@mui/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const useStyles = makeStyles(theme => ({
-    line: {
-        padding: theme.spacing(3.5),
-        paddingTop: '0px',
-        backgroundColor: theme.palette.secondary.main
-    },
     title: {
         backgroundColor: theme.palette.secondary.main,
         paddingBottom: theme.spacing(0.05),
+    },
+    detailsHeader: {
+        backgroundColor: `${theme.palette.secondary.main}!important`
     }
 }));
 
@@ -33,6 +37,8 @@ const Page = props => {
         loaded: false,
         word: ''
     });
+
+    const theme = useTheme();
 
     const getNewWord = async () => {
         setLoading(true);
@@ -61,7 +67,7 @@ const Page = props => {
                 justifyContent="center"
                 className={classes.title}
             >
-                <Typography gutterBottom={true} align="center" variant="h3">Drunkness Descriptor</Typography>
+                <Typography gutterBottom={true} align="center" variant="h3">E.R.D.D.I.E</Typography>
             </Grid>
             <Grid
                 item
@@ -85,12 +91,28 @@ const Page = props => {
             >
                 <Typography gutterBottom align="center" variant="h4">{state.word}-ed</Typography>
             </Grid>
-            <Grid
-                item
-                xs={12}
-                justifyContent="center"
-                className={classes.line}
-            />
+            <Accordion>
+                <AccordionSummary 
+                    expandIcon={<ExpandMoreIcon />}
+                    className={classes.detailsHeader}
+                >
+                    <Typography>OwO What's thi?</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>
+                        Based off of the rule stating "any word in the English language can be used to descibe how drunk you are",
+                        we present ERDDIE, the <b>Electronic Random Drunkness Descriptor Indicating Equipment </b> 
+                        (a reference to <Link href="https://en.wikipedia.org/wiki/Premium_Bond#ERNIE">ERNIE</Link>).
+                    </Typography>
+                    <br />
+                    
+                    <Typography>
+                        This is a quick lunchtime project and likely to be expanded 
+                        upon, <Link href="https://github.com/jasonalexander-ja/i-am-blank-ed">see the repo</Link> for any changes,
+                        based on a free to use <Link href="https://random-word-api.herokuapp.com/home">random word API</Link>. 
+                    </Typography>
+                </AccordionDetails>
+            </Accordion>
         </Grid>
     );
 }
