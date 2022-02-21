@@ -11,8 +11,13 @@ import {
     CircularProgress,
     Card,
     CardContent,
-    Typography
+    Typography,
+    Collapse,
+    Alert,
+    IconButton
 } from '@mui/material';
+
+import CloseIcon from '@mui/icons-material/Close';
 
 import Page from './components/Page';
 
@@ -57,25 +62,46 @@ const useStyles = makeStyles(theme =>
             flexGrow: 1,
             padding: '0px!important'
         },
-    }),
+        alert: {
+            marginTop: theme.spacing(0.5)
+        }
+    })
 );
 
 const App = props => {
     const classes = useStyles();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [state, setState] = useState({
+        loading: false,
+        error: false,
+        showCopySucess: false,
+        showCopyFail: false
+    });
+
+    const setCopySucess = open => {
+        setState(oldVals => ({ ...oldVals, showCopySucess: open }));
+        if(open)
+            setTimeout(() => setState(oldVals => ({ ...oldVals, showCopySucess: false })), 1000);
+    };
+    const setCopyFail = open => {
+        setState(oldVals => ({ ...oldVals, showCopyFail: open }));
+        if(open)
+            setTimeout(() => setState(oldVals => ({ ...oldVals, showCopyFail: false })), 1000);
+    };
+
+    const setLoading = loading => setState(oldVals => ({ ...oldVals, loading }));
+    const setError = error => setState(oldVals => ({ ...oldVals, error }));
 
     return (
         <Paper className={classes.root}>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={loading}
+                open={state.loading}
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={error}
+                open={state.error}
             >
                 <Grid
                     container
@@ -121,9 +147,37 @@ const App = props => {
                                     <Page 
                                         setLoading={setLoading}
                                         setError={setError}
+                                        loading={state.loading}
+                                        setCopySucess={setCopySucess}
+                                        setCopyFail={setCopyFail}
                                     />
                                 </CardContent>
                             </Card>
+                            <Collapse in={state.showCopyFail}>
+                                <Alert
+                                    action={
+                                        <IconButton onClick={() => setCopyFail(false)} >
+                                            <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                    }
+                                    severity="warning"
+                                    className={classes.alert}
+                                >
+                                    Sorry, couldn't manage to copy that.
+                                </Alert>
+                            </Collapse>
+                            <Collapse in={state.showCopySucess}>
+                                <Alert
+                                    action={
+                                        <IconButton onClick={() => setCopySucess(false)} >
+                                            <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                    }
+                                    className={classes.alert}
+                                >
+                                    Copied!
+                                </Alert>
+                            </Collapse>
                         </Grid>
                     </Grid>
                 </Grid>

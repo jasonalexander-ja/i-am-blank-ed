@@ -7,13 +7,17 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    Link
+    Link,
+    IconButton,
+    Tooltip
 } from '@mui/material';
 import {
-    makeStyles,
-    useTheme
+    makeStyles
 } from '@mui/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
+import ProcessWord from './ProcessWord';
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -28,7 +32,10 @@ const useStyles = makeStyles(theme => ({
 const Page = props => {
     const {
         setLoading,
-        setError
+        setError,
+        loading,
+        setCopySucess,
+        setCopyFail
     } = props;
 
     const classes = useStyles();
@@ -38,36 +45,54 @@ const Page = props => {
         word: ''
     });
 
-    const theme = useTheme();
-
     const getNewWord = async () => {
         setLoading(true);
         try {
             const res = await fetch('https://random-word-api.herokuapp.com/word').then(res => res.json());
-            setState({ loaded: true, word: res[0] });
+            const word = ProcessWord(res[0]);
+            setState(oldVals => ({ ...oldVals, loaded: true, word: word }));
         } catch(e) {
             setError(true);
         }
         setLoading(false);
-    }
+    };
+
+    const copy = async () => {
+        try {
+            await navigator.clipboard.writeText(`I am completely ${state.word}`);
+            setCopySucess(true);
+        } catch(e) {
+            setCopyFail(true);
+        }
+    };
 
     useEffect(() => {
-        if(!state.loaded) {
+        if(!state.loaded && !loading) {
             getNewWord();
         }
-    })
+    });
 
     return (
         <Grid
-            conatiner
+            container
         >
             <Grid
                 item
+                container
                 xs={12}
                 justifyContent="center"
                 className={classes.title}
             >
-                <Typography gutterBottom={true} align="center" variant="h3">E.R.D.D.I.E</Typography>
+                <Typography variant="h3">E.R.D.D.I.E</Typography>
+            </Grid>
+            <Grid
+                item
+                container
+                xs={12}
+                justifyContent="center"
+                className={classes.title}
+            >
+                <Typography gutterBottom variant="paragraph1">Electronic Random Drunkness Descriptor Indicating Equipment</Typography>
             </Grid>
             <Grid
                 item
@@ -82,21 +107,30 @@ const Page = props => {
                 xs={12}
                 justifyContent="center"
             >
-                <Button variant="contained" onClick={() => { getNewWord() }}>New</Button>
+                <Button variant="contained" onClick={() => getNewWord()}>New</Button>
             </Grid>
             <Grid
                 item
+                container
                 xs={12}
                 justifyContent="center"
             >
-                <Typography gutterBottom align="center" variant="h4">{state.word}-ed</Typography>
+                <Typography gutterBottom align="center" variant="h4">
+                    {state.word}
+                    <Tooltip title="copy">
+                        <IconButton size="small" onClick={() => copy()}>
+                            <ContentCopyIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Typography>
+                <div style={{display: 'none'}} id="copyDiv">I am completely {state.word}</div>
             </Grid>
             <Accordion>
                 <AccordionSummary 
                     expandIcon={<ExpandMoreIcon />}
                     className={classes.detailsHeader}
                 >
-                    <Typography>OwO What's thi?</Typography>
+                    <Typography>OwO What's this?</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Typography>
