@@ -92,7 +92,7 @@ const Page = props => {
                 justifyContent="center"
                 className={classes.title}
             >
-                <Typography gutterBottom variant="paragraph1">Electronic Random Drunkness Descriptor Indicating Equipment</Typography>
+                <Typography gutterBottom align='center' variant="paragraph1">Electronic Random Drunkness Descriptor Indicating Equipment</Typography>
             </Grid>
             <Grid
                 item
